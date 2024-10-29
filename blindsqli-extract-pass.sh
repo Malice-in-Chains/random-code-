@@ -1,4 +1,9 @@
 #!/bin/bash
+# Written by MaliceInChains - maliceinchains106@gmail.com 
+# -----------------------------------------------------------------
+# This script automates the password extraction via SQLi
+# on the bWAAP sqli 4 challenge.
+# -----------------------------------------------------------------
 
 # Base URL and headers for the curl request
 base_url="http://192.168.1.252/bWAPP/sqli_4.php"
