@@ -15,6 +15,7 @@ headers=(
 )
 
 # Read alphanumeric values into an array for efficiency
+# Requires a file in current directory with alpha+num characters
 mapfile -t alphanums < alphanum
 
 # Loop through each position and character to brute-force the password
